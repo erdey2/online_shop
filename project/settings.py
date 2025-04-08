@@ -56,6 +56,13 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Products, Categories, and Stock',
+    'DESCRIPTION': 'API documentation for managing products, categories, and stock in the online shop.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,  # Optional: Hides schema endpoint in Swagger UI
+}
+
 
 ROOT_URLCONF = 'project.urls'
 
@@ -130,8 +137,29 @@ STATIC_URL = 'static/'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+ASGI_APPLICATION = 'project.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOW_STOCK_THRESHOLD = 15  # Define the low stock threshold
+
+# Gmail settings
+# Make sure to use environment variables or Django's django-environ package to manage sensitive data like email credentials.
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'erdeysyoum@gmail.com'  # email address
+EMAIL_HOST_PASSWORD = 'Erdey@269'  # email password
+DEFAULT_FROM_EMAIL = 'no-reply@example.com'

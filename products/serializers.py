@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Category, Inventory
+from .models import Product, Category, Inventory, ProductImage, ProductTag
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,9 +11,20 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = '__all__'
+
+class ProductTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductTag
+        fields = '__all__'
+
 class InventorySerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True)
+    product_details = ProductSerializer(source='product', read_only=True)
+    stock = serializers.IntegerField()
 
     class Meta:
         model = Inventory
-        fields = '__all__'
+        fields = ['id', 'product_details', 'stock', 'last_updated']
