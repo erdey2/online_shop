@@ -21,6 +21,11 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField()
+    status = models.CharField(
+        max_length=20,
+        choices=[('in_stock', 'In Stock'), ('limited_stock', 'Limited Stock'), ('out_of_stock', 'Out of Stock')],
+        default='in_stock'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
@@ -30,6 +35,16 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+    def update_status(self):
+        """Update the product availability status based on stock"""
+        if self.stock == 0:
+            self.availability_status = 'out_of_stock'
+        elif self.stock < 10:
+            self.availability_status = 'limited_stock'
+        else:
+            self.availability_status = 'in_stock'
+        self.save()
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)

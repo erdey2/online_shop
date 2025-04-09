@@ -5,4 +5,4 @@ class ProductsConfig(AppConfig):
     name = 'products'
 
     def ready(self):
-        import products.low_stock_alert_signal  # Ensure the signals are registered
+        import products.signal  # Ensure the signals are registered

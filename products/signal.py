@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Inventory
+from .models import Product
 
 
 @receiver(post_save, sender=Inventory)
@@ -18,3 +19,7 @@ def check_low_stock(sender, instance, **kwargs):
         recipients = ['erdeysyoum@gamil.com', 'abelyitagesu@gmail.com']
 
         send_mail(subject, message, 'no-reply@example.com', recipients)
+
+@receiver(post_save, sender=Product)
+def update_product_availability(sender, instance, **kwargs):
+    instance.update_status()

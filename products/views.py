@@ -346,6 +346,34 @@ class UpdateInventoryView(APIView):
         except Inventory.DoesNotExist:
             return Response({"error": "Product not found in inventory"}, status=status.HTTP_404_NOT_FOUND)
 
+class ProductAvailabilityView(APIView):
+    """Check product availability by product ID """
+    @extend_schema(
+        tags=["Products"],
+        summary="Check Product Availability",
+        description="Retrieve availability and details of a product by providing its ID.",
+        parameters=[
+            OpenApiParameter(
+                name='product_id',
+                type=int,
+                location=OpenApiParameter.PATH,
+                description='ID of the product to check',
+                required=True
+            )
+        ],
+        responses={
+            200: OpenApiResponse(response=ProductSerializer, description='Product data retrieved successfully'),
+            404: OpenApiResponse(description='Product not found')
+        },
+    )
+    def get(self, request, product_id):
+        try:
+            product = Product.objects.get(id=product_id)
+            serializer = ProductSerializer(product)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Product.DoesNotExist:
+            return Response({'detail': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+
 class LowStockProductsView(APIView):
     """Returns a list of products with inventory below the stock threshold. """
     @extend_schema(
