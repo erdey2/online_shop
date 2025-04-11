@@ -15,7 +15,7 @@ urlpatterns = [
     path('tags/<uuid:pk>/', ProductTagDetailView.as_view(), name='tag-details'),
     path('update-inventory/<uuid:product_id>/', UpdateInventoryView.as_view(), name='update-inventory'),
     path('low-stock', LowStockProductsView.as_view(), name='low_stock'),
-    path('availability/', ProductAvailabilityView.as_view(), name='product_availability')
+    path('availability/<uuid:product_id>/', ProductAvailabilityView.as_view(), name='product_availability')
 
 ]
 

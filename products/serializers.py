@@ -21,6 +21,11 @@ class ProductTagSerializer(serializers.ModelSerializer):
         model = ProductTag
         fields = '__all__'
 
+class ProductStockAvailabilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['stock', 'status']
+
 class InventorySerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', read_only=True)
     stock = serializers.IntegerField()

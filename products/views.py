@@ -5,7 +5,7 @@ from django.db.models import Q
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import generics
 from .models import Product, Category, Inventory, ProductImage, ProductTag
-from .serializers import ProductSerializer, CategorySerializer, InventorySerializer, ProductImageSerializer, ProductTagSerializer
+from .serializers import ProductSerializer, CategorySerializer, InventorySerializer, ProductImageSerializer, ProductTagSerializer, ProductStockAvailabilitySerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -349,20 +349,11 @@ class UpdateInventoryView(APIView):
 class ProductAvailabilityView(APIView):
     """Check product availability by product ID """
     @extend_schema(
-        tags=["Products"],
+        tags=["Product"],
         summary="Check Product Availability",
         description="Retrieve availability and details of a product by providing its ID.",
-        parameters=[
-            OpenApiParameter(
-                name='product_id',
-                type=int,
-                location=OpenApiParameter.PATH,
-                description='ID of the product to check',
-                required=True
-            )
-        ],
         responses={
-            200: OpenApiResponse(response=ProductSerializer, description='Product data retrieved successfully'),
+            200: OpenApiResponse(response=ProductStockAvailabilitySerializer, description='Product data retrieved successfully'),
             404: OpenApiResponse(description='Product not found')
         },
     )

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from uuid import uuid4
+from datetime import timezone
 
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
@@ -57,6 +58,14 @@ class ProductTag(models.Model):
     slug = models.SlugField(max_length=48)
     description = models.TextField(blank=True, null=True)
     active = models.BooleanField(default=True)
+
+class ProductPriceHistory(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='price_history')
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    effective_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.product.name} - {self.price} on {self.effective_date.strftime('%Y-%m-%d')}"
 
 class Inventory(models.Model):
     product = models.OneToOneField(Product, on_delete=models.CASCADE)

@@ -1,10 +1,8 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Inventory
-from .models import Product
-
+from .models import Inventory, Product, ProductPriceHistory
 
 @receiver(post_save, sender=Inventory)
 def check_low_stock(sender, instance, **kwargs):
@@ -23,3 +21,13 @@ def check_low_stock(sender, instance, **kwargs):
 @receiver(post_save, sender=Product)
 def update_product_availability(sender, instance, **kwargs):
     instance.update_status()
+
+@receiver(pre_save, sender=Product)
+def log_price_change(sender, instance, **kwargs):
+    if instance.pk:
+        previous = Product.objects.get(pk=instance.pk)
+        if previous.current_price != instance.current_price:
+            ProductPriceHistory.objects.create(
+                product=instance,
+                price=previous.current_price
+            )
