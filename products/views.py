@@ -4,13 +4,13 @@ from unicodedata import category
 from django.db.models import Q
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import generics
-from .models import Product, Category, Inventory, ProductImage, ProductTag
-from .serializers import ProductSerializer, CategorySerializer, InventorySerializer, ProductImageSerializer, ProductTagSerializer, ProductStockAvailabilitySerializer
+from .models import Product, Category, Inventory, ProductImage, ProductTag, ProductPriceHistory
+from .serializers import (ProductSerializer, CategorySerializer, InventorySerializer, ProductImageSerializer,
+                          ProductTagSerializer, ProductStockAvailabilitySerializer, ProductPriceHistorySerializer)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse
-
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -319,6 +319,31 @@ class ProductTagDetailView(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+class PriceHistoryView(generics.ListAPIView):
+    """Return the price history of a product given its ID."""
+    serializer_classes = ProductPriceHistorySerializer
+
+    def get_queryset(self):
+        product_id = self.kwargs.get('product_id')
+        return ProductPriceHistory.objects.filter(product_id=product_id).order_by('updated_at')
+
+    @extend_schema(
+        tags=['Price History'],
+        summary="List product price history",
+        description="Returns a list of historical price changes for a given product ID.",
+        parameters=[
+            OpenApiParameter(
+                name='product_id',
+                type=int,
+                location=OpenApiParameter.PATH,
+                description='ID of the product'
+            )
+        ],
+        responses=ProductPriceHistorySerializer(many=True),
+    )
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
 # Inventory Views
 class UpdateInventoryView(APIView):
     """ Update stock for a specific product in the inventory."""
@@ -415,6 +440,6 @@ class LowStockProductsView(APIView):
 
 @receiver(post_save, sender=Inventory)
 def update_product_stock(sender, instance, **kwargs):
-    product = instance.product  # Assuming Inventory has a ForeignKey to Product
+    product = instance.product 
     product.stock = instance.stock  # Update product stock to match inventory stock
     product.save()

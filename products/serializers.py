@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Category, Inventory, ProductImage, ProductTag
+from .models import Product, Category, Inventory, ProductImage, ProductTag, ProductPriceHistory
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,6 +25,12 @@ class ProductStockAvailabilitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['stock', 'status']
+
+class ProductPriceHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductPriceHistory
+        fields = '__all__'
+
 
 class InventorySerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', read_only=True)
