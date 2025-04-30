@@ -38,7 +38,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'https://online-shop-53lz.onrender.com',
+    'online-shop-53lz.onrender.com',
 ]
 
 INSTALLED_APPS = [
