@@ -103,6 +103,10 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+    "default": env.db(),
+}
+
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'online_shop',
@@ -111,7 +115,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432',
     }
-}
+} """
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
