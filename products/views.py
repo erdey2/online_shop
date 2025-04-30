@@ -1,6 +1,5 @@
 from re import search
 from unicodedata import category
-
 from django.db.models import Q
 from drf_spectacular.types import OpenApiTypes
 from rest_framework import generics
@@ -13,6 +12,7 @@ from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from uuid import UUID
 
 # Category Views
 class CategoryListCreateView(generics.ListCreateAPIView):
@@ -30,7 +30,7 @@ class CategoryListCreateView(generics.ListCreateAPIView):
     @extend_schema(
         tags=['Category'],
         summary="List Categories",
-        description="Retrieve a list of all product categories. You can filter categories by name.",
+        description="Retrieve a list of all products categories. You can filter categories by name.",
         parameters=[
             OpenApiParameter(
                 name="name",
@@ -136,7 +136,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
     @extend_schema(
         tags=["Product"],
         summary="Create a New Product",
-        description="Create a new product by providing the required fields (e.g., title, category, price, stock, etc.).",
+        description="Create a new products by providing the required fields (e.g., title, category, price, stock, etc.).",
         request=ProductSerializer,
         responses={201: ProductSerializer}
     )
@@ -144,14 +144,14 @@ class ProductListCreateView(generics.ListCreateAPIView):
         return self.create(request, *args, **kwargs)
 
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """ Retrieve, update, or delete a product."""
+    """ Retrieve, update, or delete a products."""
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
     @extend_schema(
         tags=['Product'],
         summary="Retrieve a Product",
-        description="Get detailed information about a single product by its ID.",
+        description="Get detailed information about a single products by its ID.",
         responses={200: ProductSerializer},
     )
     def get(self, request, *args, **kwargs):
@@ -160,7 +160,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     @extend_schema(
         tags=['Product'],
         summary="Update a Product",
-        description="Replace the entire product record with new data.",
+        description="Replace the entire products record with new data.",
         request=ProductSerializer,
         responses={200: ProductSerializer},
     )
@@ -170,7 +170,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     @extend_schema(
         tags=['Product'],
         summary="Partially Update a Product",
-        description="Update specific fields of a product without modifying the entire record.",
+        description="Update specific fields of a products without modifying the entire record.",
         request=ProductSerializer,
         responses={200: ProductSerializer},
     )
@@ -180,14 +180,14 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     @extend_schema(
         tags=['Product'],
         summary="Delete a Product",
-        description="Remove a product from the database by its ID.",
+        description="Remove a products from the database by its ID.",
         responses={204: None},
     )
     def delete(self, request, *args, **kwargs):
         self.destroy(request, *args, **kwargs)
 
 class ProductImageListView(generics.ListCreateAPIView):
-    """Endpoint to list and create product images. """
+    """Endpoint to list and create products images. """
     serializer_class = ProductImageSerializer
     queryset = ProductImage.objects.all()
 
@@ -196,7 +196,7 @@ class ProductImageListView(generics.ListCreateAPIView):
         operation_id="list_product_images",
         responses=ProductImageSerializer(many=True),
         parameters=[
-            OpenApiParameter('product_id', type=str, description='The UUID of the product to filter images by',
+            OpenApiParameter('product_id', type=str, description='The UUID of the products to filter images by',
                              required=False)
         ]
     )
@@ -213,12 +213,12 @@ class ProductImageListView(generics.ListCreateAPIView):
         return self.create(request, *args, **kwargs)
 
 class ProductImageDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """Endpoint to retrieve, update, partially update or delete product images. """
+    """Endpoint to retrieve, update, partially update or delete products images. """
     @extend_schema(
         tags=['Product Image'],
         operation_id="get_product_image",
         responses=ProductImageSerializer,
-        description="Retrieve a single product image by its ID."
+        description="Retrieve a single products image by its ID."
     )
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
@@ -228,7 +228,7 @@ class ProductImageDetailView(generics.RetrieveUpdateDestroyAPIView):
         operation_id="update_product_image",
         request=ProductImageSerializer,
         responses=OpenApiResponse(response=ProductImageSerializer),
-        description="Update a product image."
+        description="Update a products image."
     )
     def put(self, request, *args, **kwargs):
         return self.put(request, *args, **kwargs)
@@ -238,7 +238,7 @@ class ProductImageDetailView(generics.RetrieveUpdateDestroyAPIView):
         operation_id="partial_update_product_image",
         request=ProductImageSerializer,
         responses=OpenApiResponse(response=ProductImageSerializer),
-        description="Partially update a product image."
+        description="Partially update a products image."
     )
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
@@ -247,20 +247,20 @@ class ProductImageDetailView(generics.RetrieveUpdateDestroyAPIView):
         tags=['Product Image'],
         operation_id="delete_product_image",
         responses=OpenApiResponse(response=None),
-        description="Delete a product image."
+        description="Delete a products image."
     )
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
 class ProductTagListView(generics.ListCreateAPIView):
-    """List all product tags or create a new one. """
+    """List all products tags or create a new one. """
     serializer_class = ProductTagSerializer
     queryset = ProductTag.objects.all()
 
     @extend_schema(
         tags=['Product Tag'],
         summary="List Product Tags",
-        description="Retrieve a list of all available product tags.",
+        description="Retrieve a list of all available products tags.",
         responses={200: ProductTagSerializer(many=True)},
     )
     def get(self, request, *args, **kwargs):
@@ -269,7 +269,7 @@ class ProductTagListView(generics.ListCreateAPIView):
     @extend_schema(
         tags=['Product Tag'],
         summary="Create Product Tag",
-        description="Create a new product tag by providing necessary fields.",
+        description="Create a new products tag by providing necessary fields.",
         request=ProductTagSerializer,
         responses={201: ProductTagSerializer},
     )
@@ -277,14 +277,14 @@ class ProductTagListView(generics.ListCreateAPIView):
         return self.create(request, *args, **kwargs)
 
 class ProductTagDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, update, or delete a product tag by ID. """
+    """Retrieve, update, or delete a products tag by ID. """
     serializer_class = ProductTagSerializer
     queryset = ProductTag.objects.all()
 
     @extend_schema(
         tags=['Product Tag'],
         summary="Retrieve Product Tag",
-        description="Get a single product tag by its ID.",
+        description="Get a single products tag by its ID.",
         responses={200: ProductTagSerializer},
     )
     def get(self, request, *args, **kwargs):
@@ -293,7 +293,7 @@ class ProductTagDetailView(generics.RetrieveUpdateDestroyAPIView):
     @extend_schema(
         tags=['Product Tag'],
         summary="Update Product Tag",
-        description="Update a product tag by providing all fields.",
+        description="Update a products tag by providing all fields.",
         request=ProductTagSerializer,
         responses={200: ProductTagSerializer},
     )
@@ -303,7 +303,7 @@ class ProductTagDetailView(generics.RetrieveUpdateDestroyAPIView):
     @extend_schema(
         tags=['Product Tag'],
         summary="Partially Update Product Tag",
-        description="Update a product tag by providing only the fields to change.",
+        description="Update a products tag by providing only the fields to change.",
         request=ProductTagSerializer,
         responses={200: ProductTagSerializer},
     )
@@ -313,14 +313,14 @@ class ProductTagDetailView(generics.RetrieveUpdateDestroyAPIView):
     @extend_schema(
         tags=['Product Tag'],
         summary="Delete Product Tag",
-        description="Delete a product tag by its ID.",
+        description="Delete a products tag by its ID.",
         responses={204: None},
     )
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
 class PriceHistoryView(generics.ListAPIView):
-    """Return the price history of a product given its ID."""
+    """Return the price history of a products given its ID."""
     serializer_classes = ProductPriceHistorySerializer
 
     def get_queryset(self):
@@ -329,14 +329,14 @@ class PriceHistoryView(generics.ListAPIView):
 
     @extend_schema(
         tags=['Price History'],
-        summary="List product price history",
-        description="Returns a list of historical price changes for a given product ID.",
+        summary="List products price history",
+        description="Returns a list of historical price changes for a given products ID.",
         parameters=[
             OpenApiParameter(
                 name='product_id',
                 type=int,
                 location=OpenApiParameter.PATH,
-                description='ID of the product'
+                description='ID of the products'
             )
         ],
         responses=ProductPriceHistorySerializer(many=True),
@@ -346,11 +346,11 @@ class PriceHistoryView(generics.ListAPIView):
 
 # Inventory Views
 class UpdateInventoryView(APIView):
-    """ Update stock for a specific product in the inventory."""
+    """ Update stock for a specific products in the inventory."""
     @extend_schema(
         tags=['Inventory'],
         summary="Update Inventory Stock",
-        description="Update the stock level of a specific product using its product_id.",
+        description="Update the stock level of a specific products using its product_id.",
         request={
             "application/json": {
                 "example": {"stock": 20}
@@ -361,9 +361,9 @@ class UpdateInventoryView(APIView):
             404: {"example": {"error": "Product not found in inventory"}},
         },
     )
-    def post(self, request, product_id):
+    def patch(self, request, product_id):
         try:
-            inventory = Inventory.objects.get(product=product_id)
+            inventory = Inventory.objects.get(product_id=product_id)
             new_stock = request.data.get("stock", inventory.stock)
             inventory.stock = new_stock
             inventory.save()
@@ -371,12 +371,13 @@ class UpdateInventoryView(APIView):
         except Inventory.DoesNotExist:
             return Response({"error": "Product not found in inventory"}, status=status.HTTP_404_NOT_FOUND)
 
+
 class ProductAvailabilityView(APIView):
-    """Check product availability by product ID """
+    """Check products availability by products ID """
     @extend_schema(
         tags=["Product"],
         summary="Check Product Availability",
-        description="Retrieve availability and details of a product by providing its ID.",
+        description="Retrieve availability and details of a products by providing its ID.",
         responses={
             200: OpenApiResponse(response=ProductStockAvailabilitySerializer, description='Product data retrieved successfully'),
             404: OpenApiResponse(description='Product not found')
@@ -441,5 +442,10 @@ class LowStockProductsView(APIView):
 @receiver(post_save, sender=Inventory)
 def update_product_stock(sender, instance, **kwargs):
     product = instance.product 
-    product.stock = instance.stock  # Update product stock to match inventory stock
+    product.stock = instance.stock  # Update products stock to match inventory stock
     product.save()
+
+
+class TestUUIDView(APIView):
+    def get(self, request, product_id):
+        return Response({"received_product_id": str(product_id)})

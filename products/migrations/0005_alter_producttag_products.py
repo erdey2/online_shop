@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='producttag',
             name='products',
-            field=models.ManyToManyField(blank=True, to='products.product'),
+            field=models.ManyToManyField(blank=True, to='products.products'),
         ),
     ]

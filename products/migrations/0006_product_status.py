@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='product',
+            model_name='products',
             name='status',
             field=models.CharField(choices=[('in_stock', 'In Stock'), ('limited_stock', 'Limited Stock'), ('out_of_stock', 'Out of Stock')], default='in_stock', max_length=20),
         ),

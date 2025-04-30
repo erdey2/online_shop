@@ -33,7 +33,7 @@ class ProductPriceHistorySerializer(serializers.ModelSerializer):
 
 
 class InventorySerializer(serializers.ModelSerializer):
-    product_details = ProductSerializer(source='product', read_only=True)
+    product_details = ProductSerializer(source='products', read_only=True)
     stock = serializers.IntegerField()
 
     class Meta:

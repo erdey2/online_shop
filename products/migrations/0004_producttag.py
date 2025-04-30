@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('slug', models.SlugField(max_length=48)),
                 ('description', models.TextField(blank=True, null=True)),
                 ('active', models.BooleanField(default=True)),
-                ('products', models.ManyToManyField(blank=True, null=True, to='products.product')),
+                ('products', models.ManyToManyField(blank=True, null=True, to='products.products')),
             ],
         ),
     ]

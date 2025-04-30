@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('stock', models.PositiveIntegerField(default=0)),
                 ('last_updated', models.DateTimeField(auto_now=True)),
-                ('product', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='products.product')),
+                ('products', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='products.products')),
             ],
         ),
     ]

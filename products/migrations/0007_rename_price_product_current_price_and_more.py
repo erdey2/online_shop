@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField(
-            model_name='product',
+            model_name='products',
             old_name='price',
             new_name='current_price',
         ),
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('price', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('updated_at', models.DateTimeField(auto_now_add=True)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='price_history', to='products.product')),
+                ('products', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='price_history', to='products.products')),
             ],
         ),
     ]

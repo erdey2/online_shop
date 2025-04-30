@@ -4,21 +4,26 @@ from uuid import uuid4
 
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    name = models.CharField(max_length=255, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True, db_index=True)
+    slug = models.SlugField(max_length=200, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.name} - {self.description}"
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
 
+    def __str__(self):
+        return f"{self.name} - {self.slug}"
 
 class Product(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE, null=True)
     # owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="products")
-    title = models.CharField(max_length=255)
-    description = models.TextField()
+    name = models.CharField(max_length=200, db_index=True, null=True)
+    slug = models.SlugField(max_length=200, db_index=True)
+    description = models.TextField(blank=True)
     current_price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField()
     status = models.CharField(
@@ -29,15 +34,21 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ('name', )
+        indexes = [
+            models.Index(fields=['id', 'slug'])
+        ]
+
     @staticmethod
     def generate_uuid(self):
         return str(uuid4())[:8]
 
     def __str__(self):
-        return self.title
+        return f"{self.name} - {self.category}"
 
     def update_status(self):
-        """Update the product availability status based on stock"""
+        """Update the products availability status based on stock"""
         if self.stock == 0:
             self.availability_status = 'out_of_stock'
         elif self.stock < 10:
@@ -48,13 +59,13 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="products/", blank=True, null=True)
+    image = models.ImageField(upload_to="products/%Y/%m/%d", blank=True, null=True)
     alt_text = models.CharField(max_length=255, blank=True)
 
 class ProductTag(models.Model):
     products = models.ManyToManyField(Product, blank=True)
     name = models.CharField(max_length=32)
-    slug = models.SlugField(max_length=48)
+    slug = models.SlugField(max_length=48, null=True)
     description = models.TextField(blank=True, null=True)
     active = models.BooleanField(default=True)
 
