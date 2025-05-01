@@ -1,5 +1,4 @@
 from django.utils.decorators import method_decorator
-
 from cart.models import Cart, CartItem
 from cart.views import get_user_cart
 from .models import Order, OrderItem
@@ -18,10 +17,10 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiParamet
 # Set the Stripe secret key
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-class PlaceOrderView(APIView):
+class PlaceOrderView(generics.GenericAPIView):
     """ """
-
     permission_classes = [IsAuthenticated]
+    serializer_class = OrderSerializer
 
     @extend_schema(
         tags=['Orders'],
@@ -32,7 +31,7 @@ class PlaceOrderView(APIView):
             400: OpenApiResponse(description="Cart is empty")
         }
     )
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         cart = get_user_cart(request.user)
         items = cart.items.select_related('products')
         if not items.exists():
@@ -49,10 +48,8 @@ class PlaceOrderView(APIView):
                 price=item.product.price
             )
 
-        # Clear cart after order
         items.delete()
-
-        return Response(OrderSerializer(order).data, status=201)
+        return Response(self.get_serializer(order).data, status=201)
 
 class OrderListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
