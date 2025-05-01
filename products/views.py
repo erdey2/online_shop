@@ -444,8 +444,3 @@ def update_product_stock(sender, instance, **kwargs):
     product = instance.product 
     product.stock = instance.stock  # Update products stock to match inventory stock
     product.save()
-
-
-class TestUUIDView(APIView):
-    def get(self, request, product_id):
-        return Response({"received_product_id": str(product_id)})

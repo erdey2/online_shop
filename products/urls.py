@@ -1,6 +1,6 @@
 from .views import (CategoryListCreateView, CategoryDetailView, ProductListCreateView, ProductDetailView,
                     UpdateInventoryView, LowStockProductsView, ProductImageListView, ProductImageDetailView,
-                    ProductTagListView, ProductTagDetailView, ProductAvailabilityView, PriceHistoryView, TestUUIDView)
+                    ProductTagListView, ProductTagDetailView, ProductAvailabilityView, PriceHistoryView)
 
 from django.urls import path
 
@@ -19,9 +19,6 @@ urlpatterns = [
     path('low-stock', LowStockProductsView.as_view(), name='low_stock'),
     path('<uuid:product_id>/availability/', ProductAvailabilityView.as_view(), name='products-availability'),
     path('<uuid:product_id>/price-history/', PriceHistoryView.as_view(), name='price-history'),
-
-
-    path('test/<uuid:product_id>/', TestUUIDView.as_view()),
 
 ]
 
