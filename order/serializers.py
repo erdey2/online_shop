@@ -15,3 +15,9 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'created_at', 'status', 'total', 'items']
+
+class CheckoutSessionRequestSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField()
+
+class CheckoutSessionResponseSerializer(serializers.Serializer):
+    checkout_url = serializers.URLField()
