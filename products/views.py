@@ -67,7 +67,7 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
         responses={200: CategorySerializer},
     )
     def get(self, request, *args, **kwargs):
-        self.retrieve(request, *args, **kwargs)
+        return self.retrieve(request, *args, **kwargs)
 
     @extend_schema(
         tags=['Category'],
@@ -77,7 +77,7 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
         responses={200: CategorySerializer},
     )
     def put(self, request, *args, **kwargs):
-        self.update(request, *args, **kwargs)
+        return self.update(request, *args, **kwargs)
 
     @extend_schema(
         tags=['Category'],
@@ -87,7 +87,7 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
         responses={200: CategorySerializer},
     )
     def patch(self, request, *args, **kwargs):
-        self.partial_update(request, *args, **kwargs)
+        return self.partial_update(request, *args, **kwargs)
 
     @extend_schema(
         tags=['Category'],
@@ -96,7 +96,7 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
         responses={204: None},
     )
     def delete(self, request, *args, **kwargs):
-        self.destroy(request, *args, **kwargs)
+        return self.destroy(request, *args, **kwargs)
 
 # Product Views
 class ProductListCreateView(generics.ListCreateAPIView):
