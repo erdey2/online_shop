@@ -17,9 +17,9 @@ def check_low_stock(sender, instance, **kwargs):
 
         send_mail(subject, message, 'no-reply@example.com', recipients)
 
-@receiver(post_save, sender=Product)
-def update_product_availability(sender, instance, **kwargs):
-    instance.update_status()
+# @receiver(post_save, sender=Product)
+# def update_product_availability(sender, instance, **kwargs):
+    # instance.update_status()
 
 @receiver(pre_save, sender=Product)
 def log_price_change(sender, instance, **kwargs):
