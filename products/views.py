@@ -155,7 +155,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         responses={200: ProductSerializer},
     )
     def get(self, request, *args, **kwargs):
-        self.retrieve(request, *args, **kwargs)
+        return self.retrieve(request, *args, **kwargs)
 
     @extend_schema(
         tags=['Product'],
@@ -165,7 +165,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         responses={200: ProductSerializer},
     )
     def put(self, request, *args, **kwargs):
-        self.update(request, *args, **kwargs)
+        return self.update(request, *args, **kwargs)
 
     @extend_schema(
         tags=['Product'],
@@ -175,7 +175,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         responses={200: ProductSerializer},
     )
     def patch(self, request, *args, **kwargs):
-        self.update(request, *args, **kwargs)
+        return self.update(request, *args, **kwargs)
 
     @extend_schema(
         tags=['Product'],
@@ -184,7 +184,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         responses={204: None},
     )
     def delete(self, request, *args, **kwargs):
-        self.destroy(request, *args, **kwargs)
+        return self.destroy(request, *args, **kwargs)
 
 class ProductImageListView(generics.ListCreateAPIView):
     """Endpoint to list and create products images. """
