@@ -21,10 +21,10 @@ class CategoryListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         qs = Category.objects.all()
-        name = self.request.GET.get('name')
+        title = self.request.GET.get('title')
 
-        if name:
-            qs = qs.filter(name__icontains=name)
+        if title:
+            qs = qs.filter(name__icontains=title)
         return qs
 
     @extend_schema(
@@ -33,7 +33,7 @@ class CategoryListCreateView(generics.ListCreateAPIView):
         description="Retrieve a list of all products categories. You can filter categories by name.",
         parameters=[
             OpenApiParameter(
-                name="name",
+                name="title",
                 description="Filter categories by name (case-insensitive)",
                 required=False,
                 type=str
