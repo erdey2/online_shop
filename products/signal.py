@@ -23,15 +23,15 @@ def update_product_availability(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Product)
 def log_price_change(sender, instance, **kwargs):
-    if not instance.pk:
-        return  # Skip new products
+        if not instance.pk:
+            return
 
-    try:
+        if not Product.objects.filter(pk=instance.pk).exists():
+            return  # Avoid DoesNotExist on create()
+
         previous = Product.objects.get(pk=instance.pk)
-    except Product.DoesNotExist:
-        return  # Product doesn't exist yet, nothing to compare
+        if previous.current_price != instance.current_price:
+            print(f"Price changed from {previous.current_price} to {instance.current_price}")
+            ProductPriceHistory.objects.create(product=instance, price=previous.current_price)
 
-    if previous.current_price != instance.current_price:
-        print(f"Price changed from {previous.current_price} to {instance.current_price}")
-        ProductPriceHistory.objects.create(product=instance, price=previous.current_price)
 
