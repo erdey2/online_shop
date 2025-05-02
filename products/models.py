@@ -15,7 +15,7 @@ class Category(models.Model):
         verbose_name_plural = 'categories'
 
     def __str__(self):
-        return f"{self.name} - {self.slug}"
+        return f"{self.title} - {self.slug}"
 
 class Product(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
