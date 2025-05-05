@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Cart, CartItem
 from .serializers import CartItemSerializer
 from drf_spectacular.utils import extend_schema, OpenApiResponse
+from django.contrib.auth.models import auth
 
 def get_user_cart(user):
     if user.is_authenticated:
