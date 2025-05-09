@@ -115,4 +115,33 @@ class RemoveFromCartView(generics.DestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+class CartSummaryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=["Cart"],
+        summary="Cart Summary",
+        description="Returns the total number of items and total price in the user's cart.",
+        responses={
+            200: OpenApiResponse(description="Cart summary returned successfully"),
+        },
+    )
+    def get(self, request):
+        cart = get_user_cart(request.user)
+        if not cart:
+            return Response({"count": 0, "total_price": 0.0})
+
+        items = cart.items.select_related("product")
+        total_count = sum(item.quantity for item in items)
+        total_price = sum(item.quantity * item.product.price for item in items)
+
+        return Response({
+            "count": total_count,
+            "total_price": total_price
+        })
+
+
+
+
+
 
